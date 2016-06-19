@@ -1,5 +1,5 @@
 {
-  "name": "wifi button",
+  "name": "wifi-button",
   "version": "1.0.0",
   "description": "",
   "main": "subscriber.js",

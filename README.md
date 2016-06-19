@@ -266,4 +266,4 @@ When the Lua program is working as intended it can be renamed init.lua which wil
 
 Both the subscriber and the publisher should send pingreq message to the broker within the configured keepalive period, otherwise the broker will consider them disconnected. In the mqtt.Client call in application.lua the second parameter specifies a maximum keepalive time that we can expect the broker to wait for a pingreq until it considers us disconnected.
 
-The node [mqtt](https://www.npmjs.com/package/mqtt) library handles ping communication automatically, it seems like this is the case for the NodeMCU too although it's not [documented](https://nodemcu.readthedocs.io/en/dev/en/modules/mqtt/).
+The node [mqtt](https://www.npmjs.com/package/mqtt) library handles ping communication automatically, so does the NodeMCU mqtt module, although I've seen sporadic disconnects of the NodeMCU connection.
