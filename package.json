@@ -1,0 +1,15 @@
+{
+  "name": "wifi button",
+  "version": "1.0.0",
+  "description": "",
+  "main": "subscriber.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ola Flisbäck",
+  "license": "MIT",
+  "dependencies": {
+    "mqtt": "1.11.2",
+    "open": "0.0.5"
+  }
+}
