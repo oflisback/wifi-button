@@ -19,6 +19,10 @@ local function check_button()
     end
 end
 
+local function send_ping()
+    m:publish(config.ENDPOINT, "ping", 0, 0)
+end
+
 local function mqtt_start()
     m = mqtt.Client(config.ID, 120)
     print("Connecting to MQTT broker ...")
@@ -26,6 +30,8 @@ local function mqtt_start()
       print("Connected to MQTT Broker!")
       tmr.stop(0)
       tmr.alarm(0, 100, 1, check_button)
+      tmr.stop(1)
+      tmr.alarm(1, 10 * 1000, tmr.ALARM_AUTO, send_ping)
     end, function(con, reason)
       print("Connect failed, reason: " .. reason)
     end)

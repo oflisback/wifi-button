@@ -7,26 +7,51 @@ const p3url = 'http://sverigesradio.se/topsy/direkt/164-hi.mp3'
 const stopurl = 'http://olle'
 const open = require('open')
 const fs = require('fs')
-const sys = require('sys')
 const exec = require('child_process').exec;
 
 console.log('Starting subscriber.')
 
+var process = null;
+
 client.on('connect', () => {  
-  client.subscribe('sensors/button')
+  client.subscribe('button')
 })
 
 client.on('message', (topic, message) => {  
-    if (message.toString() == "down") {
+    var state = message.toString();
+    if (state == "down") {
       // Start streaming with castaway targeting google chrome speaker and using
       // sr api, probably:
       console.log('button down!')
       var d = new Date();
       fs.appendFile('/tmp/buttondowns.txt', d.toTimeString() + ': button down');
       // or more concisely
-      function puts(error, stdout, stderr) { console.log(stdout) }
-      exec("castnow --address " + castip + " " + p3url, puts);
-    } else {
-      exec("castnow --address " + castip + " " + stopurl, puts);
+      if (process != null) {
+        process.kill();
+      }
+      var cmd = "castnow --address " + castip + " " + p3url;
+      console.log("cmd: " + cmd);
+      process = exec(cmd, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`exec error: ${error}`);
+          return;
+        }
+        console.log(`stdout: ${stdout}`);
+        console.log(`stderr: ${stderr}`);
+      });
+    } else if (state == 'up') {
+      if (process != null) {
+        process.kill();
+      }
+      var cmd = "castnow --address " + castip + " " + stopurl;
+      console.log("cmd: " + cmd);
+      process = exec(cmd, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`exec error: ${error}`);
+          return;
+        }
+        console.log(`stdout: ${stdout}`);
+        console.log(`stderr: ${stderr}`);
+      });
     }
 })
