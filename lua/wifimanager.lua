@@ -36,14 +36,20 @@ local function wifi_start(list_aps)
   end
 end
 
-function module.start()
+local function check_wifi()
   if not wifi.sta.getip() then
-    print("Configuring WiFi ...")
+    print("No wifi detected, restarting!")
     wifi.setmode(wifi.STATION);
     wifi.sta.getap(wifi_start)
-  else
-    app.start()
   end
+end
+
+function module.start()
+  tmr.alarm(3, 16000, tmr.ALARM_AUTO, check_wifi)
+
+  print("Configuring WiFi ...")
+  wifi.setmode(wifi.STATION);
+  wifi.sta.getap(wifi_start)
 end
 
 return module
