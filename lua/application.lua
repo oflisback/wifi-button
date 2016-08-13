@@ -2,15 +2,6 @@ local module = {}
 m = nil
 lastButtonState = nil
 
-local function connectMqtt(done)
-  m:connect(config.HOST, config.PORT, 0, 1, function(con)
-      done()
-    end, function(con, reason)
-      print("Connect failed, reason: " .. reason)
-    end)
-end
-
-
 local function check_button()
     buttonState = gpio.read(1)
     if buttonState ~= lastButtonState then
@@ -22,9 +13,10 @@ local function check_button()
           label = "down"
         end
         print("Publishing update " .. label .. " to " .. config.ENDPOINT)
-        connectMqtt(function ()
-          m:publish(config.ENDPOINT, label, 0, 0)
-          m:close()
+        m:connect(config.HOST, config.PORT, 0, 0, function()
+          m:publish(config.ENDPOINT, label, 0, 0, function()
+            m:close()
+          end)
         end)
       end
       lastButtonState = buttonState
@@ -32,9 +24,10 @@ local function check_button()
 end
 
 local function send_ping()
-  connectMqtt(function ()
-    m:publish(config.ENDPOINT, "ping", 0, 0)
-    m:close()
+  m:connect(config.HOST, config.PORT, 0, 0, function()
+    m:publish(config.ENDPOINT, "ping", 0, 0, function()
+      m:close()
+    end)
   end)
 end
 
